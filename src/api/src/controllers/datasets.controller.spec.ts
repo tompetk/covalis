@@ -5,7 +5,7 @@ import { initializeDataSource } from "../data-source";
 import { NotFoundException } from "@nestjs/common";
 
 describe("DatasetController", () => {
-  let appController: DatasetsController;
+  let controller: DatasetsController;
 
   beforeEach(async () => {
     await initializeDataSource();
@@ -15,17 +15,13 @@ describe("DatasetController", () => {
       providers: [DatasetService],
     }).compile();
 
-    appController = app.get<DatasetsController>(DatasetsController);
+    controller = app.get<DatasetsController>(DatasetsController);
   });
 
   describe("GetDataset", () => {
     it('Should return correct dividend yield for MSFT"', async () => {
       await expect(
-        await appController.getDataset(
-          "CompanyMetrics",
-          "MSFT",
-          "dividendYield"
-        )
+        await controller.getDataset("CompanyMetrics", "MSFT", "dividendYield")
       ).toEqual([
         {
           ticker: "MSFT",
@@ -37,7 +33,7 @@ describe("DatasetController", () => {
 
     it('Should return correct earnings per share and time for MSFT"', async () => {
       await expect(
-        await appController.getDataset("CompanyMetrics", "MSFT", [
+        await controller.getDataset("CompanyMetrics", "MSFT", [
           "earningsPerShare",
           "time",
         ])
@@ -53,7 +49,7 @@ describe("DatasetController", () => {
 
     it('Should return correct earnings per share and time for MSFT"', async () => {
       await expect(
-        await appController.getDataset("CompanyIncome", "MSFT", [
+        await controller.getDataset("CompanyIncome", "MSFT", [
           "fillingDate",
           "period",
           "revenue",
@@ -73,7 +69,7 @@ describe("DatasetController", () => {
 
     it("Should return 404 if table not found.", async () => {
       await expect(
-        appController.getDataset("non-existing-table", "MSFT", [
+        controller.getDataset("non-existing-table", "MSFT", [
           "non-existing-field",
         ])
       ).rejects.toThrow(
@@ -85,9 +81,7 @@ describe("DatasetController", () => {
 
     it("Should return 404 if data point not found.", async () => {
       await expect(
-        appController.getDataset("CompanyIncome", "MSFT", [
-          "non-existing-field",
-        ])
+        controller.getDataset("CompanyIncome", "MSFT", ["non-existing-field"])
       ).rejects.toThrow(
         new NotFoundException(
           "Data point non-existing-field does not exist in table CompanyIncome."
