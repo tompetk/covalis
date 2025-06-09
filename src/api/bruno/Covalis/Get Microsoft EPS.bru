@@ -1,0 +1,17 @@
+meta {
+  name: Get Microsoft EPS
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/datasets/CompanyMetrics?ticker=MSFT&dataPointNames=earningsPerShare&dataPointNames=time
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ticker: MSFT
+  dataPointNames: earningsPerShare
+  dataPointNames: time
+}
